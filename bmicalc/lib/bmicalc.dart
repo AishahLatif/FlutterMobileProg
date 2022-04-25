@@ -94,11 +94,11 @@ class _BmiFormState extends State<BmiForm> {
     weight = double.parse(weightEditingController.text);
     setState(() {
       bmi = weight / (height * height);
-      loadOk();
+      //loadOk();
     });
   }
-  Future loadOk() async {
-    audioPlayer = await AudioCache().play("assets/audios/ws.wav");
-  }
+  //Future loadOk() async {
+    //audioPlayer = await AudioCache().play("assets/audios/ws.wav");
+  //}
 }
   
