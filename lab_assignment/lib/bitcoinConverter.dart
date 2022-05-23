@@ -79,7 +79,10 @@ class _BitcoinConverterState extends State<BitcoinConverter> {
                 ),
                 ElevatedButton(onPressed: _loadcurrency, child: const Text("Convert")),
                 const SizedBox(height: 10),
-                Text(description, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),),
+                Text(description, 
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold, fontSize: 18),
+                ),
               ],
             ),
           ),
