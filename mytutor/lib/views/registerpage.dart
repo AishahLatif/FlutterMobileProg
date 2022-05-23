@@ -30,7 +30,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _passEditingController = TextEditingController();
   final TextEditingController _pass2EditingController = TextEditingController();
   final TextEditingController _numEditingController = TextEditingController();
-   final TextEditingController _addEditingController = TextEditingController();
+  final TextEditingController _addEditingController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -445,17 +445,21 @@ class _RegisterPageState extends State<RegisterPage> {
     String _name = _nameEditingController.text;
     String _email = _emailditingController.text;
     String _pass = _passEditingController.text;
+    String _num = _numEditingController.text;
+    String _add = _addEditingController.text;
     FocusScope.of(context).unfocus();
     ProgressDialog progressDialog = ProgressDialog(context,
         message: const Text("Registration in progress.."),
         title: const Text("Registering..."));
     progressDialog.show();
 
-    http.post(Uri.parse(MyConfig.server + "/mypasar/php/register_user.php"),
+    http.post(Uri.parse(MyConfig.server + "/mytutor/php/login_user.php"),
         body: {
           "name": _name,
           "email": _email,
-          "password": _pass
+          "password": _pass,
+          "phone number": _num,
+          "address": _add,
         }).then((response) {
       var data = jsonDecode(response.body);
       if (response.statusCode == 200 && data['status'] == 'success') {
