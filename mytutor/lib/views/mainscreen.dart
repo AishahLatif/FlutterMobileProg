@@ -43,35 +43,41 @@ class _MainScreenState extends State<MainScreen> {
     } else {
       resWidth = screenWidth * 0.75;
     }
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('MyTUTOR'),
       ),
-      body: tabchildren[_currentIndex],
-      bottomNavigationBar: BottomNavigationBar(
+      //body: tabchildren[_currentIndex],
+        bottomNavigationBar: BottomNavigationBar(
         onTap: onTabTapped,
         currentIndex: _currentIndex,
-        items: const [
+        selectedFontSize: 15,
+        selectedIconTheme: const IconThemeData(color: Colors.redAccent),
+        selectedItemColor: Colors.indigo,
+        selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold),
+        items:  [
           BottomNavigationBarItem(
               icon: Icon(
-                Icons.book
-                //size: resWidth * 0.07,
+                Icons.book,
+                size: resWidth * 0.07,
               ),
               label: "Subject"),
           BottomNavigationBarItem(
-              icon: Icon(Icons.store_mall_directory_rounded
-              //, size: resWidth * 0.07
+              icon: Icon(Icons.people_rounded
+              , size: resWidth * 0.07
               ),
               label: "Tutors"),
           BottomNavigationBarItem(
-              icon: Icon(Icons.person_rounded), 
+              icon: Icon(Icons.arrow_right_rounded
+              , size: resWidth * 0.07), 
               label: "Subscribe"),
           BottomNavigationBarItem(
-              icon: Icon(Icons.person_rounded), 
+              icon: Icon(Icons.favorite_rounded
+              , size: resWidth * 0.07), 
               label: "Favourite"),
           BottomNavigationBarItem(
-              icon: Icon(Icons.person_rounded), 
+              icon: Icon(Icons.person_rounded
+              , size: resWidth * 0.07), 
               label: "Profile")
         ],
       ),
