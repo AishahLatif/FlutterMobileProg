@@ -1,8 +1,10 @@
 import 'dart:convert';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-
+import 'package:http/http.dart' as http;
 import '../constants.dart';
+import '../models/subject.dart';
 
 class Subject extends StatefulWidget {
   const Subject({Key? key}) : super(key: key);
@@ -19,9 +21,8 @@ class _SubjectState extends State<Subject> {
   late double screenHeight, screenWidth, resWidth;
 
   var _tapPosition;
-
   var numofpage, curpage = 1;
-
+  final df = DateFormat('dd/MM/yyyy hh:mm a');
   var color;
 
   void initState() {
@@ -98,7 +99,7 @@ class _SubjectState extends State<Subject> {
                                 flex: 6,
                                 child: CachedNetworkImage(
                                   imageUrl: CONSTANTS.server +
-                                      "/slumshop/assets/products/" +
+                                      "/mytutor/assets/course/" +
                                       SubjectList[index].subjectId.toString() +
                                       '.jpg',
                                   fit: BoxFit.cover,
@@ -178,12 +179,12 @@ class _SubjectState extends State<Subject> {
   }
 
   void _loadSubjects(int i, String s, String char) {
-    curpage = pageno;
+    //curpage = pageno;
     numofpage ?? 1;
     http.post(
-        Uri.parse(CONSTANTS.server + "/slumshop/mobile/php/load_products.php"),
+        Uri.parse(CONSTANTS.server + "/mytutor/mobile/php/load_products.php"),
         body: {
-          'pageno': pageno.toString(),
+          //'pageno': pageno.toString(),
           //'search': _search,
           //'type': _type,
         }).timeout(
