@@ -4,16 +4,17 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import '../constants.dart';
-import '../models/subject.dart';
+import '../models/subjectmodel.dart';
 
-class Subject extends StatefulWidget {
-  const Subject({Key? key}) : super(key: key);
+class SubjectScreen extends StatefulWidget {
+  const SubjectScreen({Key? key}) : super(key: key);
 
   @override
-  State<Subject> createState() => _SubjectState();
+  State<SubjectScreen> createState() => _SubjectScreenState();
 }
 
-class _SubjectState extends State<Subject> {
+class _SubjectScreenState extends State<SubjectScreen> {
+  // ignore: non_constant_identifier_names
   List<Subject> SubjectList = <Subject>[];
 
   String titlecenter = "Loading...";
@@ -22,12 +23,12 @@ class _SubjectState extends State<Subject> {
 
   var _tapPosition;
   var numofpage, curpage = 1;
-  final df = DateFormat('dd/MM/yyyy hh:mm a');
   var color;
 
+  @override
   void initState() {
     super.initState();
-    _loadSubjects(1,"","All");
+    _loadSubjects(1);
   }
 
   @override
@@ -43,14 +44,8 @@ class _SubjectState extends State<Subject> {
     }
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My Product'),
+        title: const Text('Courses Available'),
         actions: const [
-          /*IconButton(
-            icon: const Icon(Icons.search),
-            onPressed: () {
-              _loadSearchDialog();
-            },
-          )*/
         ],
       ),
       body: SubjectList.isEmpty
@@ -68,22 +63,6 @@ class _SubjectState extends State<Subject> {
                     style: const TextStyle(
                         fontSize: 18, fontWeight: FontWeight.bold)),
               ),
-              /*SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: types.map((String char) {
-                    return Padding(
-                      padding: const EdgeInsets.fromLTRB(2, 0, 2, 0),
-                      child: ElevatedButton(
-                        child: Text(char),
-                        onPressed: () {
-                          _loadSubjects(1, "", char);
-                        },
-                      ),
-                    );
-                  }).toList(),
-                ),
-              ),*/
               Expanded(
                   child: GridView.count(
                       crossAxisCount: 2,
@@ -91,7 +70,6 @@ class _SubjectState extends State<Subject> {
                       children: List.generate(SubjectList.length, (index) {
                         return InkWell(
                           splashColor: Colors.amber,
-                          onTap: () => {_loadSubjectDetails(index)},
                           child: Card(
                               child: Column(
                             children: [
@@ -99,7 +77,7 @@ class _SubjectState extends State<Subject> {
                                 flex: 6,
                                 child: CachedNetworkImage(
                                   imageUrl: CONSTANTS.server +
-                                      "/mytutor/assets/course/" +
+                                      "/mytutor/assets/courses/" +
                                       SubjectList[index].subjectId.toString() +
                                       '.jpg',
                                   fit: BoxFit.cover,
@@ -127,13 +105,20 @@ class _SubjectState extends State<Subject> {
                                                   .subjectPrice
                                                   .toString())
                                               .toStringAsFixed(2)),
-                                      Text(SubjectList[index]
-                                              .subjectQty
-                                              .toString() +
-                                          " units"),
-                                      Text(SubjectList[index]
-                                          .subjectStatus
-                                          .toString()),
+                                      Text(
+                                        SubjectList[index]
+                                            .subjectSession
+                                            .toString(),
+                                        style: const TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold)),
+                                      Text(
+                                        SubjectList[index]
+                                            .subjectRating
+                                            .toString(),
+                                        style: const TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold)),
                                     ],
                                   ))
                             ],
@@ -156,7 +141,7 @@ class _SubjectState extends State<Subject> {
                       width: 40,
                       child: TextButton(
                           onPressed: () =>
-                              {_loadSubjects(index + 1, "", "All")},
+                              {_loadSubjects(index + 1)},
                           child: Text(
                             (index + 1).toString(),
                             style: TextStyle(color: color),
@@ -166,27 +151,16 @@ class _SubjectState extends State<Subject> {
                 ),
               ),
             ]),
-      /*floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.add),
-        tooltip: "New Product",
-        onPressed: () async {
-          await Navigator.push(context,
-              MaterialPageRoute(builder: (content) => const NewProduct()));
-          _loadSubjects(1, '', "All");
-        },
-      ),*/
     );
   }
 
-  void _loadSubjects(int i, String s, String char) {
-    //curpage = pageno;
+  void _loadSubjects(int pageno) {
+    curpage = pageno;
     numofpage ?? 1;
     http.post(
-        Uri.parse(CONSTANTS.server + "/mytutor/mobile/php/load_products.php"),
+        Uri.parse(CONSTANTS.server + "/mytutor/mobile/php/load_subjects.php"),
         body: {
-          //'pageno': pageno.toString(),
-          //'search': _search,
-          //'type': _type,
+          'pageno': pageno.toString(),
         }).timeout(
       const Duration(seconds: 5),
       onTimeout: () {
@@ -202,85 +176,25 @@ class _SubjectState extends State<Subject> {
         var extractdata = jsondata['data'];
         numofpage = int.parse(jsondata['numofpage']);
 
-        if (extractdata['products'] != null) {
+        if (extractdata['subjects'] != null) {
           SubjectList = <Subject>[];
-          extractdata['products'].forEach((v) {
+          extractdata['subjects'].forEach((v) {
             SubjectList.add(Subject.fromJson(v));
           });
-          titlecenter = SubjectList.length.toString() + " Products Available";
+          titlecenter = SubjectList.length.toString() + " Courses Available";
         } else {
-          titlecenter = "No Product Available";
+          titlecenter = "No Courses Available";
           SubjectList.clear();
         }
         setState(() {});
       } else {
         //do something
-        titlecenter = "No Product Available";
+        titlecenter = "No Courses Available";
         SubjectList.clear();
         setState(() {});
       }
     });
   }
 
-  _loadSubjectDetails(int index) {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(20.0))),
-            title: const Text(
-              "Product Details",
-              style: TextStyle(),
-            ),
-            content: SingleChildScrollView(
-                child: Column(
-              children: [
-                CachedNetworkImage(
-                  imageUrl: CONSTANTS.server +
-                      "/slumshop/assets/products/" +
-                      SubjectList[index].subjectId.toString() +
-                      '.jpg',
-                  fit: BoxFit.cover,
-                  width: resWidth,
-                  placeholder: (context, url) =>
-                      const LinearProgressIndicator(),
-                  errorWidget: (context, url, error) => const Icon(Icons.error),
-                ),
-                Text(
-                  SubjectList[index].subjectName.toString(),
-                  style: const TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text("Product Description: \n" +
-                      SubjectList[index].subjectDesc.toString()),
-                  Text("Price: RM " +
-                      double.parse(SubjectList[index].subjectPrice.toString())
-                          .toStringAsFixed(2)),
-                  Text("Quantity Available: " +
-                      SubjectList[index].subjectQty.toString() +
-                      " units"),
-                  Text("Product Status: " +
-                      SubjectList[index].subjectStatus.toString()),
-                  Text("Product Date: " +
-                      df.format(DateTime.parse(
-                          SubjectList[index].subjectDate.toString()))),
-                ])
-              ],
-            )),
-            actions: [
-              TextButton(
-                child: const Text(
-                  "Close",
-                  style: TextStyle(),
-                ),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          );
-        });
-  }
+
 }

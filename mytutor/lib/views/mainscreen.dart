@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mytutor/views/subjects.dart';
 import 'package:mytutor/views/tutors.dart';
 //import 'package:mytutor/models/admin.dart';
 
@@ -10,45 +11,49 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  late List<Widget> tabchildren;
-  int _currentIndex = 0;
-  String maintitle = "Buyer";
-  late double screenHeight, screenWidth, resWidth;
-
-  @override
-  void initState() {
-    super.initState();
-    tabchildren = const[
-      MainScreen(
+  static const List<Widget> _tabs = <Widget>[
+    SubjectScreen(
         //user: widget.user,
       ),
       Tutors(
         //user: widget.user
       ),
-      MainScreen(
+      SubjectScreen(
         //user: widget.user,
       ),
-      MainScreen(),
-      MainScreen()
-    ];
-  }
+      SubjectScreen(),
+      SubjectScreen()
+  ];
+  int _currentIndex = 0;
+  late double screenHeight, screenWidth, resWidth;
 
+  /*@override
+  void initState() {
+    super.initState();
+    tabchildren = const[
+      
+    ];
+  }*/
+  
   @override
   Widget build(BuildContext context) {
     screenHeight = MediaQuery.of(context).size.height;
     screenWidth = MediaQuery.of(context).size.width;
-
     if (screenWidth <= 600) {
       resWidth = screenWidth;
     } else {
       resWidth = screenWidth * 0.75;
     }
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('MyTUTOR'),
+      body: Center(
+        child: _tabs.elementAt(_currentIndex),
       ),
-      //body: tabchildren[_currentIndex],
-        bottomNavigationBar: BottomNavigationBar(
+      //body: tabchildren[_currentIndex],        
+        bottomNavigationBar: BottomNavigationBar(    
+        unselectedIconTheme: const IconThemeData(
+          color: Colors.deepOrangeAccent,
+          ),
+        unselectedItemColor: Colors.deepOrangeAccent,
         onTap: onTabTapped,
         currentIndex: _currentIndex,
         selectedFontSize: 15,
@@ -68,7 +73,7 @@ class _MainScreenState extends State<MainScreen> {
               ),
               label: "Tutors"),
           BottomNavigationBarItem(
-              icon: Icon(Icons.arrow_right_rounded
+              icon: Icon(Icons.alarm_add_rounded
               , size: resWidth * 0.07), 
               label: "Subscribe"),
           BottomNavigationBarItem(
@@ -87,21 +92,7 @@ class _MainScreenState extends State<MainScreen> {
   void onTabTapped(int index) {
     setState(() {
       _currentIndex = index;
-      if (_currentIndex == 0) {
-        maintitle = "Subject";
-      }
-      if (_currentIndex == 1) {
-        maintitle = "Tutors";
-      }
-      if (_currentIndex == 2) {
-        maintitle = "Subscribe";
-      }
-      if (_currentIndex == 3) {
-        maintitle = "Favourite";
-      }
-      if (_currentIndex == 4) {
-        maintitle = "Profile";
-      }
     });
   }
+
 }
