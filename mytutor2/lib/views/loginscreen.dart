@@ -1,11 +1,13 @@
-//import 'dart:convert';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-//import 'package:http/http.dart' as http;
-import 'package:mytutor/views/mainscreen.dart';
-import 'package:mytutor/views/registerpage.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-//import '../constants.dart';
+//import 'package:fluttertoast/fluttertoast.dart';
+import 'package:http/http.dart' as http;
+//import 'package:mytutor/constants.dart';
+//import 'package:mytutor/views/mainscreen.dart';
+//import 'package:mytutor/views/registerpage.dart';
+//import 'package:shared_preferences/shared_preferences.dart';
+
 //import '../models/admin.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -121,7 +123,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             onPressed: () => { Navigator.pushReplacement(
                                         context,
                                         MaterialPageRoute(
-                                        builder: (content) => const RegisterPage(
+                                        builder: (content) => RegisterPage(
                                           //admin: admin,
                                         )))},
                         ),
@@ -215,23 +217,24 @@ class _LoginScreenState extends State<LoginScreen> {
   void _loginUser() {
     String _email = _emailController.text;
     String _password = _passwordController.text;
-    //if (_formKey.currentState!.validate()) {
-    if (_email.isNotEmpty && _password.isNotEmpty) {
-      Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                  builder: (content) => const MainScreen(
-                        //admin: admin,
-                      )));
-      //_formKey.currentState!.save();
-      /*http.post(
-          Uri.parse("http://10.19.15.140/mytutor/mobile/php/login_user.php"),
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+      http.post(
+          Uri.parse(CONSTANTS.server + "/mytutor/mobile/php/login_user.php"),
           body: {"email": _email, "password": _password}).then((response) {
-          //print(response.body);
-        //var data = jsonDecode(response.body);
-        //if (response.statusCode == 200 && data['status'] == 'success') {
-        if (response.body == 'success') {
-          //Admin admin = Admin.fromJson(data['data']);
+        var data = jsonDecode(response.body);
+        if (response.statusCode == 200 && data['status'] == 'success') {
+          Admin admin = Admin.fromJson(data['data']);
+          // String name = data['data']['name'];
+           //String email = data['data']['email'];
+           //String password = data['data']['password'];
+           //String number = data['data']['number'];
+          // String address = data['data']['address'];
+          // String datereg = data['data']['datereg'];
+           
+           //Admin admin = Admin(
+               //name: name, email: email, id: id, role: role, datereg: datereg);
+
           Fluttertoast.showToast(
               msg: "Success",
               toastLength: Toast.LENGTH_SHORT,
@@ -241,8 +244,8 @@ class _LoginScreenState extends State<LoginScreen> {
           Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                  builder: (content) => const MainScreen(
-                        //admin: admin,
+                  builder: (content) => MainScreen(
+                        admin: admin,
                       )));
         } else {
           Fluttertoast.showToast(
@@ -252,7 +255,7 @@ class _LoginScreenState extends State<LoginScreen> {
               timeInSecForIosWeb: 1,
               fontSize: 16.0);
         }
-      });*/
+      });
     }
   }
-}
+}// TODO Implement this library.

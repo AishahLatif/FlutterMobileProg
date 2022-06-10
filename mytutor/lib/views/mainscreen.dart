@@ -1,69 +1,101 @@
 import 'package:flutter/material.dart';
-import 'package:mytutor/models/admin.dart';
+import 'package:mytutor/views/tutors.dart';
+//import 'package:mytutor/models/admin.dart';
 
 class MainScreen extends StatefulWidget {
-  const MainScreen({Key? key, required Admin admin}) : super(key: key);
+  const MainScreen({Key? key}) : super(key: key);
 
   @override
   State<MainScreen> createState() => _MainScreenState();
 }
 
 class _MainScreenState extends State<MainScreen> {
+  late List<Widget> tabchildren;
+  int _currentIndex = 0;
+  String maintitle = "Buyer";
+  late double screenHeight, screenWidth, resWidth;
+
+  @override
+  void initState() {
+    super.initState();
+    tabchildren = const[
+      MainScreen(
+        //user: widget.user,
+      ),
+      Tutors(
+        //user: widget.user
+      ),
+      MainScreen(
+        //user: widget.user,
+      ),
+      MainScreen(),
+      MainScreen()
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
+    screenHeight = MediaQuery.of(context).size.height;
+    screenWidth = MediaQuery.of(context).size.width;
+
+    if (screenWidth <= 600) {
+      resWidth = screenWidth;
+    } else {
+      resWidth = screenWidth * 0.75;
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('MyTUTOR'),
       ),
-      drawer: Drawer(
-        child: ListView(
-          children: [
-            const UserAccountsDrawerHeader(
-              accountName: Text("Aishah Latif"),
-              accountEmail: Text("aishahlatif@gmail.com"),
-              currentAccountPicture: CircleAvatar(
-                backgroundImage: AssetImage('assets/images/mytuto.png'),
+      body: tabchildren[_currentIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        onTap: onTabTapped,
+        currentIndex: _currentIndex,
+        items: const [
+          BottomNavigationBarItem(
+              icon: Icon(
+                Icons.book
+                //size: resWidth * 0.07,
               ),
-            ),
-            _createDrawerItem(
-              icon: Icons.person,
-              text: 'My Profile',
-              onTap: () {},
-            ),
-             _createDrawerItem(
-              icon: Icons.info,
-              text: 'Tutor available',
-              onTap: () {},
-            ),
-            _createDrawerItem(
-              icon: Icons.newspaper,
-              text: 'News',
-              onTap: () {},
-            ),
-          ],
-        ),
-      ),
-      body: const Center(
-        child: Text('No Tutor Data'),
+              label: "Subject"),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.store_mall_directory_rounded
+              //, size: resWidth * 0.07
+              ),
+              label: "Tutors"),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.person_rounded), 
+              label: "Subscribe"),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.person_rounded), 
+              label: "Favourite"),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.person_rounded), 
+              label: "Profile")
+        ],
       ),
     );
   }
 
-  Widget _createDrawerItem(
-      {required IconData icon,
-      required String text,
-      required GestureTapCallback onTap}) {
-    return ListTile(
-      title: Row(
-        children: <Widget>[
-          Icon(icon),
-          Padding(
-            padding: const EdgeInsets.only(left: 8.0),
-            child: Text(text),
-          )
-        ],
-      ),
-      onTap: onTap,
-    );
+  void onTabTapped(int index) {
+    setState(() {
+      _currentIndex = index;
+      if (_currentIndex == 0) {
+        maintitle = "Subject";
+      }
+      if (_currentIndex == 1) {
+        maintitle = "Tutors";
+      }
+      if (_currentIndex == 2) {
+        maintitle = "Subscribe";
+      }
+      if (_currentIndex == 3) {
+        maintitle = "Favourite";
+      }
+      if (_currentIndex == 4) {
+        maintitle = "Profile";
+      }
+    });
   }
 }

@@ -1,11 +1,13 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:mytutor/models/config.dart';
 import 'dart:convert';
 import 'package:ndialog/ndialog.dart';
+import '../constants.dart';
 import 'loginscreen.dart';
+import 'package:image_picker/image_picker.dart';
+//import 'package:image_cropper/image_cropper.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({Key? key}) : super(key: key);
@@ -15,9 +17,12 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  bool _isChecked = false;
+  //bool _isChecked = false;
   bool _passwordVisible = true;
   String eula = "";
+  String pathAsset = 'assets/images/camera.png';
+  // ignore: prefer_typing_uninitialized_variables
+  var _image;
 
   late double screenHeight, screenWidth, resWidth;
   final focus = FocusNode();
@@ -61,10 +66,23 @@ class _RegisterPageState extends State<RegisterPage> {
       child: SizedBox(
         height: screenHeight / 3.5,
         width: resWidth * 0.7,
-        child: Image.asset(
+        child: Card(
+              child: GestureDetector(
+                  onTap: () => {_takePictureDialog()},
+                  child: SizedBox(
+                      height: screenHeight / 2.5,
+                      width: screenWidth,
+                      child: _image == null
+                          ? Image.asset(pathAsset)
+                          : Image.file(
+                              _image,
+                              fit: BoxFit.cover,
+                            ))),
+            ),
+        /*child: Image.asset(
           'assets/images/reg.jpg',
           fit: BoxFit.cover,
-        ),
+        ),*/
       ),
     );
   }
@@ -237,15 +255,15 @@ class _RegisterPageState extends State<RegisterPage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        Checkbox(
+                        /*Checkbox(
                           value: _isChecked,
                           onChanged: (bool? value) {
                             setState(() {
                               _isChecked = value!;
                             });
                           },
-                        ),
-                        Flexible(
+                        ),*/
+                        /*Flexible(
                           child: GestureDetector(
                             onTap: _showEULA,
                             child: const Text('Agree with terms',
@@ -254,7 +272,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                   fontWeight: FontWeight.bold,
                                 )),
                           ),
-                        ),
+                        ),*/
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
                               fixedSize: Size(screenWidth / 3, 50)),
@@ -298,7 +316,7 @@ class _RegisterPageState extends State<RegisterPage> {
           const SizedBox(
             height: 10,
           ),
-          GestureDetector(
+          /*GestureDetector(
             onTap: null,
             child: const Text(
               "Back to Home",
@@ -310,14 +328,14 @@ class _RegisterPageState extends State<RegisterPage> {
           ),
           const SizedBox(
             height: 10,
-          ),
+          ),*/
         ],
       ),
     );
   }
 
   void _registerAccountDialog() {
-    if (!_formKey.currentState!.validate()) {
+    /*if (!_formKey.currentState!.validate()) {
       Fluttertoast.showToast(
           msg: "Please complete the registration form first",
           toastLength: Toast.LENGTH_SHORT,
@@ -335,7 +353,7 @@ class _RegisterPageState extends State<RegisterPage> {
           timeInSecForIosWeb: 1,
           fontSize: 14.0);
       return;
-    }
+    }*/
 
     showDialog(
       context: context,
@@ -389,7 +407,7 @@ class _RegisterPageState extends State<RegisterPage> {
     }
   }
 
-  void _showEULA() {
+ /* void _showEULA() {
     loadEula();
     showDialog(
       context: context,
@@ -438,7 +456,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   loadEula() async {
     eula = await rootBundle.loadString('assets/eula.txt');
-  }
+  }*/
 
   void _registerUserAccount() {
     FocusScope.of(context).requestFocus(FocusNode());
@@ -453,7 +471,7 @@ class _RegisterPageState extends State<RegisterPage> {
         title: const Text("Registering..."));
     progressDialog.show();
 
-    http.post(Uri.parse(MyConfig.server + "/mytutor/php/login_user.php"),
+    http.post(Uri.parse(CONSTANTS.server + "/mytutor/php/register_user.php"),
         body: {
           "name": _name,
           "email": _email,
@@ -487,4 +505,85 @@ class _RegisterPageState extends State<RegisterPage> {
       }
     });
   }
+
+  _takePictureDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+            title: const Text(
+              "Select from",
+            ),
+            content: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                TextButton.icon(
+                    onPressed: () => {
+                          Navigator.of(context).pop(),
+                          _galleryPicker(),
+                        },
+                    icon: const Icon(Icons.browse_gallery),
+                    label: const Text("Gallery")),
+                TextButton.icon(
+                    onPressed: () =>
+                        {Navigator.of(context).pop(), _cameraPicker()},
+                    icon: const Icon(Icons.camera_alt),
+                    label: const Text("Camera")),
+              ],
+            ));
+      },
+    );
+  }
+
+  _galleryPicker() async {
+     final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(
+      source: ImageSource.gallery,
+      maxHeight: 800,
+      maxWidth: 800,
+    );
+    if (pickedFile != null) {
+      _image = File(pickedFile.path);
+      //_cropImage();
+    }
+  }
+
+  _cameraPicker() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(
+      source: ImageSource.camera,
+      maxHeight: 800,
+      maxWidth: 800,
+    );
+    if (pickedFile != null) {
+      _image = File(pickedFile.path);
+      //_cropImage();
+    }
+  }
+
+  /*void _cropImage() async {
+     CroppedFile? croppedFile = await ImageCropper().cropImage(
+        sourcePath: _image!.path,
+        aspectRatioPresets: [
+          CropAspectRatioPreset.square,
+          // CropAspectRatioPreset.ratio3x2,
+          // CropAspectRatioPreset.original,
+          // CropAspectRatioPreset.ratio4x3,
+          // CropAspectRatioPreset.ratio16x9
+        ],
+        androidUiSettings: const AndroidUiSettings(
+            toolbarTitle: 'Cropper',
+            toolbarColor: Colors.deepOrange,
+            toolbarWidgetColor: Colors.white,
+            initAspectRatio: CropAspectRatioPreset.original,
+            lockAspectRatio: false),
+        iosUiSettings: const IOSUiSettings(
+          minimumAspectRatio: 1.0,
+        ));
+    if (croppedFile != null) {
+      _image = croppedFile;
+      setState(() {});
+    }
+  }*/
 }
