@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -21,8 +20,9 @@ class _SubjectScreenState extends State<SubjectScreen> {
 
   late double screenHeight, screenWidth, resWidth;
 
-  var _tapPosition;
+  // ignore: prefer_typing_uninitialized_variables
   var numofpage, curpage = 1;
+  // ignore: prefer_typing_uninitialized_variables
   var color;
 
   @override
@@ -195,6 +195,4 @@ class _SubjectScreenState extends State<SubjectScreen> {
       }
     });
   }
-
-
 }

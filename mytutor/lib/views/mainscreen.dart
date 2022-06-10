@@ -15,7 +15,7 @@ class _MainScreenState extends State<MainScreen> {
     SubjectScreen(
         //user: widget.user,
       ),
-      Tutors(
+      TutorScreen(
         //user: widget.user
       ),
       SubjectScreen(
