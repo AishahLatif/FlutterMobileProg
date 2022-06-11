@@ -3,7 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import '../constants.dart';
-import '../models/subjectmodel.dart';
+import '../models/tutormodel.dart';
 
 class TutorScreen extends StatefulWidget {
   const TutorScreen({Key? key}) : super(key: key);
@@ -14,7 +14,7 @@ class TutorScreen extends StatefulWidget {
 
 class _TutorScreenState extends State<TutorScreen> {
   // ignore: non_constant_identifier_names
-  List<Subject> SubjectList = <Subject>[];
+  List<Tutor> TutorList = <Tutor>[];
 
   String titlecenter = "Loading...";
 
@@ -48,7 +48,7 @@ class _TutorScreenState extends State<TutorScreen> {
         actions: const [
         ],
       ),
-      body: SubjectList.isEmpty
+      body: TutorList.isEmpty
           ? Center(
             child: Text(
               titlecenter, style: const TextStyle(
@@ -67,7 +67,7 @@ class _TutorScreenState extends State<TutorScreen> {
                   child: GridView.count(
                       crossAxisCount: 2,
                       childAspectRatio: (1 / 1),
-                      children: List.generate(SubjectList.length, (index) {
+                      children: List.generate(TutorList.length, (index) {
                         return InkWell(
                           splashColor: Colors.amber,
                           child: Card(
@@ -78,7 +78,7 @@ class _TutorScreenState extends State<TutorScreen> {
                                 child: CachedNetworkImage(
                                   imageUrl: CONSTANTS.server +
                                       "/mytutor/assets/tutors/" +
-                                      SubjectList[index].subjectId.toString() +
+                                      TutorList[index].tutorId.toString() +
                                       '.jpg',
                                   fit: BoxFit.cover,
                                   width: resWidth,
@@ -93,28 +93,24 @@ class _TutorScreenState extends State<TutorScreen> {
                                   child: Column(
                                     children: [
                                       Text(
-                                        SubjectList[index]
-                                            .subjectName
+                                        TutorList[index]
+                                            .tutorName
                                             .toString(),
                                         style: const TextStyle(
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold),
                                       ),
-                                      Text("RM " +
-                                          double.parse(SubjectList[index]
-                                                  .subjectPrice
-                                                  .toString())
-                                              .toStringAsFixed(2)),
                                       Text(
-                                        SubjectList[index]
-                                            .subjectSession
+                                        TutorList[index]
+                                            .tutorEmail
                                             .toString(),
                                         style: const TextStyle(
                                             fontSize: 16,
-                                            fontWeight: FontWeight.bold)),
+                                            fontWeight: FontWeight.bold),
+                                      ),
                                       Text(
-                                        SubjectList[index]
-                                            .subjectRating
+                                        TutorList[index]
+                                            .tutorPhone
                                             .toString(),
                                         style: const TextStyle(
                                             fontSize: 16,
@@ -177,24 +173,22 @@ class _TutorScreenState extends State<TutorScreen> {
         numofpage = int.parse(jsondata['numofpage']);
 
         if (extractdata['tutors'] != null) {
-          SubjectList = <Subject>[];
+          TutorList = <Tutor>[];
           extractdata['tutors'].forEach((v) {
-            SubjectList.add(Subject.fromJson(v));
+            TutorList.add(Tutor.fromJson(v));
           });
-          titlecenter = SubjectList.length.toString() + " Tutors Available";
+          titlecenter = TutorList.length.toString() + " Tutors Available";
         } else {
           titlecenter = "No Tutors Available";
-          SubjectList.clear();
+          TutorList.clear();
         }
         setState(() {});
       } else {
         //do something
         titlecenter = "No Tutors Available";
-        SubjectList.clear();
+        TutorList.clear();
         setState(() {});
       }
     });
   }
-
-
 }
