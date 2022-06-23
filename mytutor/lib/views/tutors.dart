@@ -70,6 +70,7 @@ class _TutorScreenState extends State<TutorScreen> {
                       children: List.generate(TutorList.length, (index) {
                         return InkWell(
                           splashColor: Colors.amber,
+                          onTap: () => {_loadTutorDetails(index)},
                           child: Card(
                               child: Column(
                             children: [
@@ -190,5 +191,64 @@ class _TutorScreenState extends State<TutorScreen> {
         setState(() {});
       }
     });
+  }
+
+  _loadTutorDetails(int index) {
+   showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(20.0))),
+            title: const Text(
+              "Tutor Details",
+              style: TextStyle(),
+            ),
+            content: SingleChildScrollView(
+                child: Column(
+              children: [
+                CachedNetworkImage(
+                  imageUrl: CONSTANTS.server +
+                      "/mytutor/assets/tutors/" +
+                      TutorList[index].tutorId.toString() +
+                      '.jpg',
+                  fit: BoxFit.cover,
+                  width: resWidth,
+                  placeholder: (context, url) =>
+                      const LinearProgressIndicator(),
+                  errorWidget: (context, url, error) => const Icon(Icons.error),
+                ),
+                Text(
+                  TutorList[index].tutorName.toString(),
+                  style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Text("Tutor Email: \n" +
+                      TutorList[index].tutorEmail.toString()),
+                  Text("Phone:  " +
+                      double.parse(TutorList[index].tutorPhone.toString())
+                          .toStringAsFixed(2)),
+                  Text("About: " +
+                      TutorList[index].tutorDesc.toString() +
+                      " units"),
+                  Text("Subject: " +
+                      TutorList[index].subjectName.toString()),
+                ])
+              ],
+            )),
+            actions: [
+              TextButton(
+                child: const Text(
+                  "Close",
+                  style: TextStyle(),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        });   
   }
 }

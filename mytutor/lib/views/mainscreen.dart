@@ -85,7 +85,7 @@ class _MainScreenState extends State<MainScreen> {
               , size: resWidth * 0.07), 
               label: "Profile")
         ],
-      ),
+      ),     
     );
   }
 
@@ -95,4 +95,6 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
+  void _loadSearchDialog() {}
+  
 }

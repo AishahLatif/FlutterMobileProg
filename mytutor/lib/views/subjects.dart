@@ -17,9 +17,10 @@ class _SubjectScreenState extends State<SubjectScreen> {
   List<Subject> SubjectList = <Subject>[];
 
   String titlecenter = "Loading...";
-
+  TextEditingController searchController = TextEditingController();
   late double screenHeight, screenWidth, resWidth;
-
+  String search = "";
+  String dropdownvalue = 'Programming 101';
   // ignore: prefer_typing_uninitialized_variables
   var numofpage, curpage = 1;
   // ignore: prefer_typing_uninitialized_variables
@@ -45,7 +46,13 @@ class _SubjectScreenState extends State<SubjectScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Courses Available'),
-        actions: const [
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.search),
+            onPressed: () {
+              _loadSearchDialog();
+            },
+          ),
         ],
       ),
       body: SubjectList.isEmpty
@@ -194,5 +201,49 @@ class _SubjectScreenState extends State<SubjectScreen> {
         setState(() {});
       }
     });
+  }
+
+  void _loadSearchDialog() {
+    searchController.text = "";
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          // return object of type Dialog
+          return StatefulBuilder(
+            builder: (context, StateSetter setState) {
+              return AlertDialog(
+                title: const Text(
+                  "Search ",
+                ),
+                content: SizedBox(
+                  //height: screenHeight / 4,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      TextField(
+                        controller: searchController,
+                        decoration: InputDecoration(
+                            labelText: 'Search subject',
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(5.0))),
+                      ),
+                      const SizedBox(height: 5),                      
+                    ],
+                  ),
+                ),
+                actions: [
+                  ElevatedButton(
+                    onPressed: () {
+                      search = searchController.text;
+                      Navigator.of(context).pop();
+                      _loadSubjects(1);
+                    },
+                    child: const Text("Search"),
+                  )
+                ],
+              );
+            },
+          );
+        });
   }
 }
