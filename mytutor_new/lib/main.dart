@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'My TUTOR',
       theme: ThemeData(
-        primarySwatch: Colors.blueGrey,
+        primarySwatch: Colors.brown,
         textTheme: GoogleFonts.poppinsTextTheme(
           Theme.of(context).textTheme.apply(),
         ),
