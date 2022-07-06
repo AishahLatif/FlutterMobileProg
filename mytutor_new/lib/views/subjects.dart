@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:cached_network_image/cached_network_image.dart';
 import '../constants.dart';
-
 import '../models/subjectmodel.dart';
 
 class SubjectScreen extends StatefulWidget {
@@ -35,10 +34,8 @@ class _SubjectScreenState extends State<SubjectScreen> {
     screenWidth = MediaQuery.of(context).size.width;
     if (screenWidth <= 600) {
       resWidth = screenWidth;
-      //rowcount = 2;
     } else {
       resWidth = screenWidth * 0.75;
-      //rowcount = 3;
     }
     return Scaffold(
       appBar: AppBar(
@@ -67,9 +64,10 @@ class _SubjectScreenState extends State<SubjectScreen> {
                     style: const TextStyle(
                         fontSize: 18, fontWeight: FontWeight.bold)),
               ),
+              const SizedBox(height: 15),
               Expanded(
                   child: GridView.count(
-                      crossAxisCount: 2,
+                      crossAxisCount: 1,
                       childAspectRatio: (1 / 1),
                       children: List.generate(SubjectList.length, (index) {
                         return InkWell(
@@ -81,7 +79,7 @@ class _SubjectScreenState extends State<SubjectScreen> {
                                 flex: 6,
                                 child: CachedNetworkImage(
                                   imageUrl: CONSTANTS.server +
-                                      "/mytutor_new/assets/courses/" +
+                                      "/mytutor/mobile/assets/courses/" +
                                       SubjectList[index].subjectId.toString() +
                                       '.jpg',
                                   fit: BoxFit.cover,
@@ -91,7 +89,8 @@ class _SubjectScreenState extends State<SubjectScreen> {
                                   errorWidget: (context, url, error) =>
                                       const Icon(Icons.error),
                                 ),
-                              ),
+                              ), 
+                              const SizedBox(height: 20),                        
                               Flexible(
                                   flex: 4,
                                   child: Column(
@@ -158,7 +157,80 @@ class _SubjectScreenState extends State<SubjectScreen> {
     );
   }
 
-  void _loadSubjects(int i, String search) {}
+  void _loadSubjects(int pageno, String _search) {
+    curpage = pageno;
+    numofpage ?? 1;
+    http.post(
+      Uri.parse(CONSTANTS.server + "/mytutor/mobile/php/load_subjects.php"),
+      body: {
+        'pageno' : pageno.toString(),
+        'search' : _search,
+      }
+    ).then((response) {
+        var jsondata = jsonDecode(response.body);
+        if (response.statusCode == 200 && jsondata['status'] == 'success') {
+          var extractdata = jsondata['data'];
+          numofpage = int.parse(jsondata['numofpage']);
+          if (extractdata['subjects'] != null) {
+            SubjectList = <Subject>[];
+            extractdata['subjects'].forEach((v) {
+              SubjectList.add(Subject.fromJson(v));
+            });
+            setState(() {});
+          } else {
+            titlecenter = "No Courses Available";
+            setState(() {});
+          }
+        }
+      }
+    );
+  }
 
-  void _loadSearchDialog() {}
+  void _loadSearchDialog() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          // return object of type Dialog
+              return AlertDialog(
+                title: const Text(
+                  "Search ",
+                ),
+                content: SizedBox(
+                  height: screenHeight / 6,
+                  child: Column(
+                    //mainAxisSize: MainAxisSize.min,
+                    children: [
+                      TextField(
+                        controller: searchController,
+                        decoration: InputDecoration(
+                            labelText: 'Search subject',
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(5.0))),
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          search = searchController.text;
+                          Navigator.of(context).pop();
+                          _loadSubjects(1, search);
+                        },
+                        child: const Text("Search"),
+                      )
+                      //const SizedBox(height: 5),                      
+                    ],
+                  ),
+                ),
+                actions: <Widget>[
+                  TextButton(
+                    child: const Text(
+                      "Close", style: TextStyle(),                      
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),                 
+                ],
+              );           
+
+        });
+  }
 }
