@@ -23,7 +23,7 @@ class Tutor {
     tutorEmail = json['tutor_email'];
     tutorPhone = json['tutor_phone'];
     tutorName = json['tutor_name'];
-    tutorDesc = json['tutor_desc'];
+    tutorDesc = json['tutor_description'];
     tutorDatereg = json['tutor_datereg'];
     subjectName = json['subject_name'];
   }
@@ -34,7 +34,7 @@ class Tutor {
     data['tutor_email'] = tutorEmail;
     data['tutor_phone'] = tutorPhone;
     data['tutor_name'] = tutorName;
-    data['tutor_desc'] = tutorDesc;
+    data['tutor_description'] = tutorDesc;
     data['tutor_datereg'] = tutorDatereg;
     data['subject_name'] = subjectName;
     return data;

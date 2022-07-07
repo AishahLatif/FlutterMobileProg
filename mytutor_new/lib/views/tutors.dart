@@ -52,12 +52,6 @@ class _TutorScreenState extends State<TutorScreen> {
             )
           )
           : Column(children: [
-              /*Padding(
-                padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-                child: Text(titlecenter,
-                    style: const TextStyle(
-                        fontSize: 15, fontWeight: FontWeight.bold)),
-              ),*/
               const SizedBox(height: 10),
               Expanded(
                   child: GridView.count(

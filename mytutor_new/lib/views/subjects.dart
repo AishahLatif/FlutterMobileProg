@@ -58,12 +58,6 @@ class _SubjectScreenState extends State<SubjectScreen> {
             )
           )
           : Column(children: [
-              /*Padding(
-                padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-                child: Text(titlecenter,
-                    style: const TextStyle(
-                        fontSize: 18, fontWeight: FontWeight.bold)),
-              ),*/
               const SizedBox(height: 10),
               Expanded(
                   child: GridView.count(
@@ -110,14 +104,14 @@ class _SubjectScreenState extends State<SubjectScreen> {
                                                     .subjectPrice
                                                     .toString())
                                                 .toStringAsFixed(2)),
-                                        Text(
+                                        Text("Session: " +
                                           SubjectList[index]
                                               .subjectSession
                                               .toString(),
                                           style: const TextStyle(
                                               fontSize: 16,
                                               fontWeight: FontWeight.bold)),
-                                        Text(
+                                        Text("Rating: " +
                                           SubjectList[index]
                                               .subjectRating
                                               .toString(),

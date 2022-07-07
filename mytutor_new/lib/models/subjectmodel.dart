@@ -23,7 +23,7 @@ class Subject {
     subjectDesc = json['subject_description'];
     subjectPrice = json['subject_price'];
     tutorId = json['tutor_id'];
-    subjectSession = json['subject_session'];
+    subjectSession = json['subject_sessions'];
     subjectRating = json['subject_rating'];
   }
 
