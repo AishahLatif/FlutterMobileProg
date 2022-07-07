@@ -58,13 +58,13 @@ class _SubjectScreenState extends State<SubjectScreen> {
             )
           )
           : Column(children: [
-              Padding(
+              /*Padding(
                 padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
                 child: Text(titlecenter,
                     style: const TextStyle(
                         fontSize: 18, fontWeight: FontWeight.bold)),
-              ),
-              const SizedBox(height: 15),
+              ),*/
+              const SizedBox(height: 10),
               Expanded(
                   child: GridView.count(
                       crossAxisCount: 1,
@@ -90,46 +90,49 @@ class _SubjectScreenState extends State<SubjectScreen> {
                                       const Icon(Icons.error),
                                 ),
                               ), 
-                              const SizedBox(height: 20),                        
+                              const SizedBox(height: 15),                        
                               Flexible(
                                   flex: 4,
-                                  child: Column(
-                                    children: [
-                                      Text(
-                                        SubjectList[index]
-                                            .subjectName
-                                            .toString(),
-                                        style: const TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      Text("RM " +
-                                          double.parse(SubjectList[index]
-                                                  .subjectPrice
-                                                  .toString())
-                                              .toStringAsFixed(2)),
-                                      Text(
-                                        SubjectList[index]
-                                            .subjectSession
-                                            .toString(),
-                                        style: const TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold)),
-                                      Text(
-                                        SubjectList[index]
-                                            .subjectRating
-                                            .toString(),
-                                        style: const TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold)),
-                                    ],
+                                  child: Center(
+                                    child: Column(
+                                      children: [
+                                        Text(
+                                          SubjectList[index]
+                                              .subjectName
+                                              .toString(),
+                                              textAlign: TextAlign.center,
+                                          style: const TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        Text("RM " +
+                                            double.parse(SubjectList[index]
+                                                    .subjectPrice
+                                                    .toString())
+                                                .toStringAsFixed(2)),
+                                        Text(
+                                          SubjectList[index]
+                                              .subjectSession
+                                              .toString(),
+                                          style: const TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold)),
+                                        Text(
+                                          SubjectList[index]
+                                              .subjectRating
+                                              .toString(),
+                                          style: const TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold)),
+                                      ],
+                                    ),
                                   ))
                             ],
                           )),
                         );
                       }))),
               SizedBox(
-                height: 30,
+                height: 35,
                 child: ListView.builder(
                   shrinkWrap: true,
                   itemCount: numofpage,
