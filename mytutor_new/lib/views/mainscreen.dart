@@ -1,22 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:mytutor_new/views/subjects.dart';
 import 'package:mytutor_new/views/tutors.dart';
+import '../models/usermodel.dart';
 
 class MainScreen extends StatefulWidget {
-  const MainScreen({ Key? key }) : super(key: key);
+  final User user;
+  const MainScreen({ Key? key, required this.user }) : super(key: key);
 
   @override
   State<MainScreen> createState() => _MainScreenState();
 }
 
 class _MainScreenState extends State<MainScreen> {
-  static const List<Widget> _tabs = <Widget>[
-    SubjectScreen(),
-    TutorScreen(),
-    SubjectScreen(),
-    SubjectScreen(),
-    SubjectScreen()
+  late final List _tabs;
+  @override
+  void initState() {
+    super.initState();
+   _tabs = [
+    SubjectScreen(user: widget.user),
+    const TutorScreen(),
+    SubjectScreen(user: widget.user),
+    SubjectScreen(user: widget.user),
+    SubjectScreen(user: widget.user),
   ];
+  }
   int _currentIndex = 0;
   late double screenHeight, screenWidth, resWidth;
 

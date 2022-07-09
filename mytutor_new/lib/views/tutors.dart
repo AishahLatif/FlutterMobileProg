@@ -22,6 +22,7 @@ class _TutorScreenState extends State<TutorScreen> {
   var numofpage, curpage = 1;
   var color;
 
+  @override
   void initState() {
     super.initState();
     _loadTutors(1);
@@ -39,7 +40,7 @@ class _TutorScreenState extends State<TutorScreen> {
     }
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Tutors Available'),
+        title: const Text('Tutors'),
         actions: const [
         ],
       ),
@@ -52,6 +53,14 @@ class _TutorScreenState extends State<TutorScreen> {
             )
           )
           : Column(children: [
+            const Padding(
+                  padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                  child: Text("Tutors Available",
+                      style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.brown)),
+                ),
               const SizedBox(height: 10),
               Expanded(
                   child: GridView.count(

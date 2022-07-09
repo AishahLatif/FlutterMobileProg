@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:mytutor_new/views/registerscreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:mytutor_new/views/mainscreen.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import '../constants.dart';
+import '../models/usermodel.dart';
+import 'mainscreen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({ Key? key }) : super(key: key);
@@ -213,13 +217,40 @@ class _LoginScreenState extends State<LoginScreen> {
     String _email = _emailController.text;
     String _password = _passwordController.text;
     //if (_formKey.currentState!.validate()) {
-    if (_email.isNotEmpty && _password.isNotEmpty) {
-      Navigator.pushReplacement(
-              context,
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+      http.post(
+        Uri.parse(CONSTANTS.server + "/mytutor/mobile/php/login_user.php"),
+        body: {"email": _email, "password":_password}).then((response) {
+          var data = jsonDecode(response.body);
+          if (response.statusCode == 200 && data['status'] == 'success') {
+            Fluttertoast.showToast(
+              msg: "Success",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIosWeb: 1,
+              fontSize: 16.0
+            );
+            var extractdata = data['data'];
+            User user = User.fromJson(extractdata);
+            print(user.email);
+            Navigator.pushReplacement(context,
               MaterialPageRoute(
-                  builder: (content) => const MainScreen(
-                        //admin: admin,
-                      )));
+                  builder: (content) => MainScreen(
+                        user: user,
+                      )),
+            );
+          } else {
+            Fluttertoast.showToast(
+              msg: "Failed",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIosWeb: 1,
+              fontSize: 16.0
+            );
+          }
+        });
+              
     }
   }
 }

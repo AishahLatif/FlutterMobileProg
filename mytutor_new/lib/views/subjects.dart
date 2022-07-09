@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:cached_network_image/cached_network_image.dart';
 import '../constants.dart';
 import '../models/subjectmodel.dart';
+import '../models/usermodel.dart';
 
 class SubjectScreen extends StatefulWidget {
-  const SubjectScreen({ Key? key }) : super(key: key);
+  final User user;
+  const SubjectScreen({ Key? key, required this.user, }) : super(key: key);
 
   @override
   State<SubjectScreen> createState() => _SubjectScreenState();
@@ -39,13 +42,22 @@ class _SubjectScreenState extends State<SubjectScreen> {
     }
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Courses Available'),
+        title: const Text('Courses'),
         actions: [
           IconButton(
             icon: const Icon(Icons.search),
             onPressed: () {
               _loadSearchDialog();
             },
+          ),
+          TextButton.icon(
+            icon: const Icon(Icons.shopping_cart_sharp,
+            color: Colors.white,
+            ),           
+            onPressed: () async {},
+              label: Text(widget.user.cart.toString(),
+              style: const TextStyle(color: Colors.white)
+              ),           
           ),
         ],
       ),
@@ -58,6 +70,14 @@ class _SubjectScreenState extends State<SubjectScreen> {
             )
           )
           : Column(children: [
+            const Padding(
+                  padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                  child: Text("Courses Available",
+                      style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.brown)),
+                ),
               const SizedBox(height: 10),
               Expanded(
                   child: GridView.count(
@@ -76,7 +96,7 @@ class _SubjectScreenState extends State<SubjectScreen> {
                                       "/mytutor/mobile/assets/courses/" +
                                       SubjectList[index].subjectId.toString() +
                                       '.jpg',
-                                  fit: BoxFit.cover,
+                                  //fit: BoxFit.cover,
                                   width: resWidth,
                                   placeholder: (context, url) =>
                                       const LinearProgressIndicator(),
@@ -96,7 +116,7 @@ class _SubjectScreenState extends State<SubjectScreen> {
                                               .toString(),
                                               textAlign: TextAlign.center,
                                           style: const TextStyle(
-                                              fontSize: 16,
+                                              fontSize: 14,
                                               fontWeight: FontWeight.bold),
                                         ),
                                         Text("RM " +
@@ -104,21 +124,31 @@ class _SubjectScreenState extends State<SubjectScreen> {
                                                     .subjectPrice
                                                     .toString())
                                                 .toStringAsFixed(2)),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            const Spacer(),
                                         Text("Session: " +
                                           SubjectList[index]
                                               .subjectSession
                                               .toString(),
                                           style: const TextStyle(
-                                              fontSize: 16,
+                                              fontSize: 14,
                                               fontWeight: FontWeight.bold)),
+                                              Expanded(child: IconButton(
+                                          onPressed: () {
+                                            _addtoCartDialog(index);
+                                          }, 
+                                          icon: const Icon(Icons.shopping_cart_sharp))),
+                                        ]),
                                         Text("Rating: " +
                                           SubjectList[index]
                                               .subjectRating
                                               .toString(),
                                           style: const TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold)),
-                                      ],
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold)),                                     
+                                      ]
                                     ),
                                   ))
                             ],
@@ -230,4 +260,42 @@ class _SubjectScreenState extends State<SubjectScreen> {
 
         });
   }
+
+  void _addtoCartDialog(int index) {
+    _addToCart(index);
+  }
+
+  void _addToCart(int index) {
+    http.post(
+      Uri.parse(CONSTANTS.server + "/mytutor/mobile/php/insert_cart.php"),
+      body: {
+        "email": widget.user.email.toString(),
+        "subid": SubjectList[index].subjectId.toString(),
+      }
+    ).timeout(
+      const Duration(seconds: 5),
+      onTimeout: () {
+        return http.Response(
+          'Error', 408
+        );
+      },
+    ).then((response) {
+      print(response.body);
+      var jsondata = jsonDecode(response.body);
+      if (response.statusCode == 200 && jsondata['status'] == 'success') {
+        print(jsondata['data']['carttotal'].toString());
+        setState(() {
+          widget.user.cart = jsondata['data']['carttotal'].toString();
+        });
+        Fluttertoast.showToast(
+          msg: "Success",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          fontSize: 16.0
+        );
+      }
+    });
+  }
+
 }
