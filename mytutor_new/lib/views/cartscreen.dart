@@ -91,16 +91,6 @@ class _CartScreenState extends State<CartScreen> {
                                             style: const TextStyle(
                                                 fontSize: 19,
                                                 color: Colors.brown)),
-                                        /*Text(
-                                            "RM " +
-                                                double.parse(cartList[index]
-                                                        .subprice
-                                                        .toString())
-                                                    .toStringAsFixed(2) +
-                                                "/subject",
-                                            style: const TextStyle(
-                                                fontSize: 25,
-                                                fontWeight: FontWeight.bold)),*/
                                         Row(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.center,
@@ -118,9 +108,6 @@ class _CartScreenState extends State<CartScreen> {
                                                         FontWeight.bold),
                                               ),
 
-                                              /*Text(cartList[index]
-                                                .cartqty
-                                                .toString()),*/
                                               IconButton(
                                                   onPressed: () {
                                                     _deleteItem(index);
@@ -163,7 +150,7 @@ class _CartScreenState extends State<CartScreen> {
     http.post(
       Uri.parse(CONSTANTS.server + "/mytutor/mobile/php/load_cart.php"),
       body: {
-        'cust_email': widget.user.email,
+        'email': widget.user.email,
       }
     ).timeout(
       const Duration(seconds: 5),

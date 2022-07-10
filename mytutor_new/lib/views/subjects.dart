@@ -270,7 +270,35 @@ class _SubjectScreenState extends State<SubjectScreen> {
   }
 
   void _addtoCartDialog(int index) {
-    _addToCart(index);
+   showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(20.0))),
+          title: const Text("Add subject to Cart", style: TextStyle(),
+          ),
+          content: const Text("Are you sure?", style: TextStyle()),
+          actions: <Widget>[
+            TextButton(
+              child: const Text("Yes", style: TextStyle(),
+              ),
+              onPressed: () async {
+                Navigator.of(context).pop();
+                _addToCart(index);
+              },
+            ),
+            TextButton(child: 
+            const Text("No", style: TextStyle(),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void _addToCart(int index) {
@@ -330,13 +358,5 @@ class _SubjectScreenState extends State<SubjectScreen> {
       }
     });
   }
-  /*$sqlcheckqty = "SELECT * FROM tbl_subjects WHERE subject_id = '$subid'";
-$resultqty = $conn->query($sqlcheckqty);
-$num_of_qty = $resultqty->num_rows;
-if ($num_of_qty>1) {
-    $response = array('status' => 'failed', 'data' => null);
-    sendJsonResponse($response);
-    return;
-}*/
 
 }
