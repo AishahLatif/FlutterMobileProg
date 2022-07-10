@@ -6,6 +6,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import '../constants.dart';
 import '../models/subjectmodel.dart';
 import '../models/usermodel.dart';
+import 'cartscreen.dart';
 
 class SubjectScreen extends StatefulWidget {
   final User user;
@@ -54,7 +55,14 @@ class _SubjectScreenState extends State<SubjectScreen> {
             icon: const Icon(Icons.shopping_cart_sharp,
             color: Colors.white,
             ),           
-            onPressed: () async {},
+            onPressed: () async {
+              await Navigator.push(
+                context,
+                MaterialPageRoute(builder : (content) => CartScreen(user: widget.user))
+              );
+              _loadSubjects(1, search);
+              _loadMyCart();
+            },
               label: Text(widget.user.cart.toString(),
               style: const TextStyle(color: Colors.white)
               ),           
@@ -291,11 +299,44 @@ class _SubjectScreenState extends State<SubjectScreen> {
           msg: "Success",
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 1,
+          timeInSecForIosWeb: 1, 
           fontSize: 16.0
         );
       }
     });
   }
+
+  void _loadMyCart() {
+    http.post(
+      Uri.parse(CONSTANTS.server + "/mytutor/mobile/php/load_mycartqty.php"),
+      body: {
+        "email": widget.user.email.toString(),
+      }
+    ).timeout(
+      const Duration(seconds: 5),
+      onTimeout: () {
+        return http.Response(
+          'Error', 408
+        );
+      },
+    ).then((response) {
+      print(response.body);
+      var jsondata = jsonDecode(response.body);
+      if (response.statusCode == 200 && jsondata['status'] == 'success') {
+        print(jsondata['data']['carttotal'].toString());
+        setState(() {
+          widget.user.cart = jsondata['data']['carttotal'].toString();
+        });
+      }
+    });
+  }
+  /*$sqlcheckqty = "SELECT * FROM tbl_subjects WHERE subject_id = '$subid'";
+$resultqty = $conn->query($sqlcheckqty);
+$num_of_qty = $resultqty->num_rows;
+if ($num_of_qty>1) {
+    $response = array('status' => 'failed', 'data' => null);
+    sendJsonResponse($response);
+    return;
+}*/
 
 }
